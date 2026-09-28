@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<footer th:fragment="footer" class="luxury-footer">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <h2>HOUSEKEEPTRACK HOTEL</h2>
+            <p>A benchmark of legendary luxury hospitality. Powered by an intelligent real-time housekeeping lifecycle and room status governance system.</p>
+            <div style="margin-top: 18px; color: var(--gold-light); font-size: 13px;">
+                ★ ★ ★ ★ ★ &nbsp; 5-Star Heritage Luxury Hotel
+            </div>
+        </div>
+
+        <div class="footer-col">
+            <h4>EXPLORE</h4>
+            <ul>
+                <li><a th:href="@{/rooms}">Luxury Rooms &amp; Suites</a></li>
+                <li><a th:href="@{/room-status}">Live Room Status</a></li>
+                <li><a th:href="@{/gallery}">Photo Gallery</a></li>
+                <li><a th:href="@{/contact}">Concierge &amp; Location</a></li>
+                <li><a th:href="@{/bookings}">Guest Reservations</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>HOUSEKEEPING OPS</h4>
+            <ul>
+                <li><a th:href="@{/housekeepers}">Housekeeping Staff</a></li>
+                <li><a th:href="@{/cleaning-tasks}">Cleaning Assignments</a></li>
+                <li><a th:href="@{/inspections}">Supervisor Inspections</a></li>
+                <li><a th:href="@{/admin/dashboard}">Executive Dashboard</a></li>
+                <li><a th:href="@{/reports}">Turnaround Reports</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>CONCIERGE</h4>
+            <p style="font-size: 13px; line-height: 1.8; color: #aaa;">
+                HouseKeepTrack Palace Estate<br>
+                Sardar Patel Marg, Diplomatic Enclave<br>
+                New Delhi, India 110021<br>
+                <strong>Tel:</strong> +91 11 2611 0202<br>
+                <strong>Email:</strong> reservations@housekeeptrack.com
+            </p>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>&copy; 2026 HouseKeepTrack Hotel. All rights reserved. Academic Hospitality &amp; Housekeeping Task Management Project.</p>
+    </div>
+
+    <!-- Global Book Room Modal -->
+    <div id="bookRoomModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Reserve a Luxury Chamber</h3>
+                <button class="modal-close" onclick="closeModal('bookRoomModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="quick-booking-form" onsubmit="handleQuickBooking(event)">
+                    <div class="form-group">
+                        <label>Select Chamber (Must be in READY status)</label>
+                        <select name="roomId" id="bookingRoomSelect" class="form-control ready-rooms-select" required>
+                            <option value="">-- Choose Room --</option>
+                        </select>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                            <label>Guest Full Name</label>
+                            <input type="text" name="guestName" class="form-control" placeholder="e.g. Vikram Malhotra" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" name="guestPhone" class="form-control" placeholder="+91 98765 43210" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" name="guestEmail" class="form-control" placeholder="guest@example.com">
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                            <label>Check-In Date</label>
+                            <input type="date" name="checkInDate" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Check-Out Date</label>
+                            <input type="date" name="checkOutDate" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Number of Guests</label>
+                        <select name="numberOfGuests" class="form-control">
+                            <option value="1">1 Guest</option>
+                            <option value="2" selected>2 Guests</option>
+                            <option value="3">3 Guests</option>
+                            <option value="4">4 Guests (Suite)</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;">
+                        <button type="button" class="btn-luxury-outline" onclick="closeModal('bookRoomModal')">Cancel</button>
+                        <button type="submit" class="btn-luxury-gold">Confirm Reservation</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <!-- Scripts -->
+    <script th:src="@{/js/main.js}"></script>
+</footer>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Supervisor Room Quality Inspections – HouseKeepTrack Hotel')}"></head>
+<body>
+
+    <!-- NAVIGATION -->
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <!-- HEADER TITLE BANNER -->
+    <div style="background: var(--bg-secondary); border-bottom: 1px solid var(--gold-border); padding: 40px 24px;">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+            <div>
+                <span class="section-label">5-STAR QUALITY ASSURANCE</span>
+                <h1 style="font-size: 2.2rem; font-weight: 700;">Supervisor Room Inspections</h1>
+                <p style="color: var(--text-secondary); font-size: 13.5px; margin-top: 4px;">
+                    Rigorous white-glove audit before chambers can be unlocked for guest check-in.
+                </p>
+            </div>
+            <button class="btn-luxury-outline" onclick="loadInspectedRoomsForApproval(); loadInspectionsList();">⟳ Refresh Audit Queue</button>
+        </div>
+    </div>
+
+    <!-- MAIN INSPECTIONS SECTION -->
+    <section style="padding: 45px 24px; min-height: 75vh; background: var(--bg-primary);">
+        <div class="container">
+            <!-- PENDING INSPECTIONS QUEUE -->
+            <div style="margin-bottom: 50px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                    <div>
+                        <span class="section-label" style="font-size:10px;">ACTION REQUIRED</span>
+                        <h2 style="font-size: 1.45rem;">Chambers Awaiting Supervisor Audit (INSPECTED State)</h2>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="luxury-table">
+                        <thead>
+                            <tr>
+                                <th>Chamber #</th>
+                                <th>Category &amp; Floor</th>
+                                <th>Current Status</th>
+                                <th>Housekeeping Verdict</th>
+                                <th>Supervisor Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pending-inspections-tbody">
+                            <!-- Loaded dynamically by inspections.js -->
+                            <tr><td colspan="5" class="text-center" style="padding: 24px; color: #888;">Checking for rooms pending inspection...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- HISTORICAL INSPECTIONS AUDIT LOG -->
+            <div>
+                <div style="margin-bottom:16px;">
+                    <span class="section-label" style="font-size:10px;">HISTORICAL AUDIT LOG</span>
+                    <h2 style="font-size: 1.45rem;">Past Inspection Records</h2>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="luxury-table">
+                        <thead>
+                            <tr>
+                                <th>Audit #</th>
+                                <th>Chamber #</th>
+                                <th>Supervisor</th>
+                                <th>Result</th>
+                                <th>Remarks</th>
+                                <th>Inspected At</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inspections-history-tbody">
+                            <!-- Loaded dynamically by inspections.js -->
+                            <tr><td colspan="6" class="text-center" style="padding: 24px; color: #888;">Loading past inspections...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAIL INSPECTION REMARKS MODAL -->
+    <div id="failInspectionModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Fail Room Inspection</h3>
+                <button class="modal-close" onclick="closeModal('failInspectionModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 13.5px; color: var(--text-secondary); margin-bottom: 18px;">
+                    Failing inspection for <strong style="color: var(--status-dirty);">Room <span id="failModalRoomNumber">-</span></strong> will automatically:
+                    <br>&bull; Revert room status back to <strong>CLEANING</strong>
+                    <br>&bull; Reopen the cleaning task for the housekeeper
+                    <br>&bull; Prevent room from becoming READY
+                </p>
+
+                <form id="failInspectionForm">
+                    <div class="form-group">
+                        <label>Supervisor Name</label>
+                        <input type="text" name="supervisorName" class="form-control" value="Supervisor David" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Defect Remarks / Required Corrections</label>
+                        <textarea name="remarks" class="form-control" rows="3" placeholder="e.g. Bathroom vanity mirror has water spots. Bed linen improperly pressed." required></textarea>
+                    </div>
+
+                    <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;">
+                        <button type="button" class="btn-luxury-outline" onclick="closeModal('failInspectionModal')">Cancel</button>
+                        <button type="submit" class="btn-luxury-gold" style="background: linear-gradient(135deg, #c22929 0%, #9e1d1d 100%);">Submit Failed Inspection</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+    <script th:src="@{/js/inspections.js}"></script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Concierge &amp; Location – HouseKeepTrack Hotel')}"></head>
+<body>
+
+    <!-- NAVIGATION -->
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <!-- HEADER TITLE BANNER -->
+    <div style="background: var(--bg-secondary); border-bottom: 1px solid var(--gold-border); padding: 50px 24px; text-align: center;">
+        <span class="section-label">24/7 DEDICATED ASSISTANCE</span>
+        <h1 style="font-size: 2.6rem; font-weight: 700;">Concierge &amp; Enquiries</h1>
+        <p style="color: var(--text-secondary); font-size: 1.05rem; max-width: 600px; margin: 10px auto 0;">
+            Our head concierge team is available around the clock to tailor your palatial stay.
+        </p>
+    </div>
+
+    <!-- CONTACT FORM & INFO -->
+    <section style="padding: 70px 24px; min-height: 75vh; background: var(--bg-primary);">
+        <div class="container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: flex-start;">
+            <!-- Contact Details -->
+            <div class="luxury-card" style="padding: 35px;">
+                <span class="section-label">ESTATE ADDRESS</span>
+                <h3 style="font-size: 1.5rem; margin-bottom: 20px;">HouseKeepTrack Hotel &amp; Palace</h3>
+                <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 24px;">
+                    Sardar Patel Marg, Diplomatic Enclave<br>
+                    New Delhi, National Capital Region<br>
+                    India &ndash; 110021
+                </p>
+
+                <div style="font-size: 13.5px; line-height: 2.2; color: var(--text-secondary); border-top: 1px solid rgba(0,0,0,0.08); padding-top: 20px;">
+                    <div><strong>Head Concierge:</strong> +91 11 2611 0202</div>
+                    <div><strong>Reservations Desk:</strong> reservations@housekeeptrack.com</div>
+                    <div><strong>Housekeeping Command:</strong> ops@housekeeptrack.com</div>
+                    <div><strong>Check-in Time:</strong> 14:00 hrs &nbsp;|&nbsp; <strong>Check-out Time:</strong> 12:00 hrs</div>
+                </div>
+            </div>
+
+            <!-- Message Form -->
+            <div class="luxury-card" style="padding: 35px;">
+                <span class="section-label">SEND A MESSAGE</span>
+                <h3 style="font-size: 1.5rem; margin-bottom: 20px;">Bespoke Inquiries</h3>
+
+                <form onsubmit="event.preventDefault(); showToast('Thank you. Our royal concierge will respond shortly.', 'success'); this.reset();">
+                    <div class="form-group">
+                        <label>Your Name</label>
+                        <input type="text" class="form-control" placeholder="Vikram Malhotra" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" class="form-control" placeholder="guest@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Subject</label>
+                        <input type="text" class="form-control" placeholder="Suite Availability / VIP Housekeeping Inquiry">
+                    </div>
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea class="form-control" rows="4" placeholder="How may our palace staff assist you today?" required></textarea>
+                    </div>
+                    <button type="submit" class="btn-luxury-gold" style="width: 100%; margin-top: 10px;">Transmit Inquiry</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

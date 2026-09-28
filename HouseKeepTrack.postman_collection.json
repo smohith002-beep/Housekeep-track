@@ -1,0 +1,461 @@
+{
+  "info": {
+    "name": "HouseKeepTrack – Complete CRUD & Operations REST API Collection",
+    "description": "Comprehensive Postman collection supporting full CRUD (GET, POST, PUT, DELETE) for Room, Housekeeper, CleaningTask, Inspection, Guest, Booking, AuditLog, and Dashboard.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Rooms CRUD",
+      "item": [
+        {
+          "name": "GET All Rooms",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/api/rooms"
+          }
+        },
+        {
+          "name": "GET Room By ID",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/api/rooms/1"
+          }
+        },
+        {
+          "name": "POST Create Room",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roomNumber\": \"205\",\n  \"floor\": 2,\n  \"roomType\": \"DELUXE\",\n  \"status\": \"READY\",\n  \"capacity\": 2\n}"
+            },
+            "url": "http://localhost:8080/api/rooms"
+          }
+        },
+        {
+          "name": "PUT Update Room",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roomNumber\": \"205\",\n  \"floor\": 2,\n  \"roomType\": \"SUITE\",\n  \"status\": \"READY\",\n  \"capacity\": 3\n}"
+            },
+            "url": "http://localhost:8080/api/rooms/1"
+          }
+        },
+        {
+          "name": "DELETE Room",
+          "request": {
+            "method": "DELETE",
+            "url": "http://localhost:8080/api/rooms/9"
+          }
+        },
+        {
+          "name": "PUT Change Room Status",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"CLEANING\"\n}"
+            },
+            "url": "http://localhost:8080/api/rooms/2/status"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Housekeepers CRUD",
+      "item": [
+        {
+          "name": "GET All Housekeepers",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/api/housekeepers"
+          }
+        },
+        {
+          "name": "GET Housekeeper By ID",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/api/housekeepers/1"
+          }
+        },
+        {
+          "name": "POST Create Housekeeper",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Priya\",\n  \"phone\": \"9876543210\",\n  \"email\": \"priya@housekeeptrack.com\",\n  \"status\": \"AVAILABLE\"\n}"
+            },
+            "url": "http://localhost:8080/api/housekeepers"
+          }
+        },
+        {
+          "name": "PUT Update Housekeeper",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Priya Sharma\",\n  \"phone\": \"9876543210\",\n  \"email\": \"priya.sharma@housekeeptrack.com\",\n  \"status\": \"AVAILABLE\"\n}"
+            },
+            "url": "http://localhost:8080/api/housekeepers/2"
+          }
+        },
+        {
+          "name": "DELETE Housekeeper",
+          "request": {
+            "method": "DELETE",
+            "url": "http://localhost:8080/api/housekeepers/6"
+          }
+        },
+        {
+          "name": "GET Available Housekeepers",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/api/housekeepers/available"
+          }
+        },
+        {
+          "name": "GET Housekeeper Tasks",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/api/housekeepers/1/tasks"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Cleaning Tasks CRUD & Workflows",
+      "item": [
+        {
+          "name": "GET All Cleaning Tasks",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/api/cleaning-tasks"
+          }
+        },
+        {
+          "name": "GET Cleaning Task By ID",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/api/cleaning-tasks/1"
+          }
+        },
+        {
+          "name": "POST Create Cleaning Task",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roomId\": 1,\n  \"housekeeperId\": 2,\n  \"status\": \"ASSIGNED\",\n  \"notes\": \"Complete room cleaning\"\n}"
+            },
+            "url": "http://localhost:8080/api/cleaning-tasks"
+          }
+        },
+        {
+          "name": "PUT Update Cleaning Task",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notes\": \"VIP guest arriving, deep steam cleaning requested.\"\n}"
+            },
+            "url": "http://localhost:8080/api/cleaning-tasks/1"
+          }
+        },
+        {
+          "name": "DELETE Cleaning Task",
+          "request": {
+            "method": "DELETE",
+            "url": "http://localhost:8080/api/cleaning-tasks/10"
+          }
+        },
+        {
+          "name": "PUT Start Cleaning Task",
+          "request": {
+            "method": "PUT",
+            "url": "http://localhost:8080/api/cleaning-tasks/1/start"
+          }
+        },
+        {
+          "name": "PUT Complete Cleaning Task",
+          "request": {
+            "method": "PUT",
+            "url": "http://localhost:8080/api/cleaning-tasks/1/complete"
+          }
+        },
+        {
+          "name": "PUT Reopen Cleaning Task",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notes\": \"Linen replacement needed\"\n}"
+            },
+            "url": "http://localhost:8080/api/cleaning-tasks/1/reopen"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Inspections CRUD & Workflows",
+      "item": [
+        {
+          "name": "GET All Inspections",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/api/inspections"
+          }
+        },
+        {
+          "name": "GET Inspection By ID",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/api/inspections/1"
+          }
+        },
+        {
+          "name": "POST Create Inspection",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roomId\": 1,\n  \"supervisorName\": \"Manager\",\n  \"inspectionStatus\": \"PASSED\",\n  \"remarks\": \"Room is clean\"\n}"
+            },
+            "url": "http://localhost:8080/api/inspections"
+          }
+        },
+        {
+          "name": "PUT Update Inspection",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"supervisorName\": \"Head Manager\",\n  \"remarks\": \"Verified with white-glove inspection.\"\n}"
+            },
+            "url": "http://localhost:8080/api/inspections/1"
+          }
+        },
+        {
+          "name": "DELETE Inspection",
+          "request": {
+            "method": "DELETE",
+            "url": "http://localhost:8080/api/inspections/10"
+          }
+        },
+        {
+          "name": "POST Pass Inspection (ID)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"supervisorName\": \"Manager\",\n  \"remarks\": \"100% compliant with luxury hygiene standard.\"\n}"
+            },
+            "url": "http://localhost:8080/api/inspections/1/pass"
+          }
+        },
+        {
+          "name": "POST Fail Inspection (ID)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"supervisorName\": \"Manager\",\n  \"remarks\": \"Dust on credenza. Re-cleaning required.\"\n}"
+            },
+            "url": "http://localhost:8080/api/inspections/1/fail"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Guests CRUD",
+      "item": [
+        {
+          "name": "GET All Guests",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/api/guests"
+          }
+        },
+        {
+          "name": "GET Guest By ID",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/api/guests/1"
+          }
+        },
+        {
+          "name": "POST Create Guest",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Arun Kumar\",\n  \"phone\": \"9876543210\",\n  \"email\": \"arun@example.com\",\n  \"address\": \"Coimbatore\"\n}"
+            },
+            "url": "http://localhost:8080/api/guests"
+          }
+        },
+        {
+          "name": "PUT Update Guest",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Arun Kumar\",\n  \"phone\": \"9876543210\",\n  \"email\": \"arun.kumar@example.com\",\n  \"address\": \"Race Course Road, Coimbatore\"\n}"
+            },
+            "url": "http://localhost:8080/api/guests/1"
+          }
+        },
+        {
+          "name": "DELETE Guest",
+          "request": {
+            "method": "DELETE",
+            "url": "http://localhost:8080/api/guests/10"
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Bookings CRUD & Checkout",
+      "item": [
+        {
+          "name": "GET All Bookings",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/api/bookings"
+          }
+        },
+        {
+          "name": "GET Booking By ID",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/api/bookings/1"
+          }
+        },
+        {
+          "name": "POST Create Booking (Room Must Be READY)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"guestId\": 1,\n  \"roomId\": 1,\n  \"checkInDate\": \"2026-09-29\",\n  \"checkOutDate\": \"2026-10-01\",\n  \"bookingStatus\": \"RESERVED\"\n}"
+            },
+            "url": "http://localhost:8080/api/bookings"
+          }
+        },
+        {
+          "name": "PUT Update Booking",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"checkInDate\": \"2026-09-29\",\n  \"checkOutDate\": \"2026-10-02\",\n  \"bookingStatus\": \"CHECKED_IN\"\n}"
+            },
+            "url": "http://localhost:8080/api/bookings/1"
+          }
+        },
+        {
+          "name": "DELETE Booking",
+          "request": {
+            "method": "DELETE",
+            "url": "http://localhost:8080/api/bookings/10"
+          }
+        },
+        {
+          "name": "POST Checkout Guest (Section 10)",
+          "request": {
+            "method": "POST",
+            "url": "http://localhost:8080/api/bookings/1/checkout"
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Audit Logs CRUD",
+      "item": [
+        {
+          "name": "GET All Audit Logs",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/api/audit-logs"
+          }
+        },
+        {
+          "name": "GET Audit Log By ID",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/api/audit-logs/1"
+          }
+        },
+        {
+          "name": "POST Create Audit Log",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"entityType\": \"ROOM\",\n  \"entityId\": 101,\n  \"action\": \"MANUAL_AUDIT\",\n  \"oldValue\": \"DIRTY\",\n  \"newValue\": \"CLEANING\",\n  \"changedBy\": \"ADMIN\"\n}"
+            },
+            "url": "http://localhost:8080/api/audit-logs"
+          }
+        },
+        {
+          "name": "PUT Update Audit Log",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"MANUAL_AUDIT_VERIFIED\"\n}"
+            },
+            "url": "http://localhost:8080/api/audit-logs/1"
+          }
+        },
+        {
+          "name": "DELETE Audit Log",
+          "request": {
+            "method": "DELETE",
+            "url": "http://localhost:8080/api/audit-logs/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Dashboard Statistics",
+      "item": [
+        {
+          "name": "GET Dashboard Statistics (Section 20)",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/api/dashboard/statistics"
+          }
+        },
+        {
+          "name": "GET Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "url": "http://localhost:8080/api/dashboard/stats"
+          }
+        }
+      ]
+    }
+  ]
+}

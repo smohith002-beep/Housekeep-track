@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Executive Admin Dashboard – HouseKeepTrack Hotel')}"></head>
+<body>
+
+    <!-- TOP NAVIGATION -->
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <!-- DASHBOARD WITH SIDEBAR LAYOUT -->
+    <div class="dashboard-layout">
+        <!-- SIDEBAR -->
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-header">
+                <h3>ADMIN PORTAL</h3>
+                <span>OPERATIONS &amp; GOVERNANCE</span>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a th:href="@{/admin/dashboard}" class="active"><i>📊</i> Executive Dashboard</a></li>
+                <li><a th:href="@{/rooms}"><i>🛏️</i> Chambers &amp; Suites</a></li>
+                <li><a th:href="@{/room-status}"><i>📌</i> Live Room Status</a></li>
+                <li><a th:href="@{/bookings}"><i>🛎️</i> Guest Bookings</a></li>
+                <li><a th:href="@{/housekeepers}"><i>🧹</i> Housekeeping Staff</a></li>
+                <li><a th:href="@{/cleaning-tasks}"><i>📋</i> Cleaning Tasks</a></li>
+                <li><a th:href="@{/inspections}"><i>🔍</i> Quality Inspections</a></li>
+                <li><a th:href="@{/reports}"><i>📈</i> Turnaround Reports</a></li>
+                <li><a th:href="@{/audit-logs}"><i>📜</i> System Audit Trail</a></li>
+            </ul>
+            <div style="padding: 20px; font-size: 11px; color: #666; border-top: 1px solid rgba(255,255,255,0.06);">
+                Logged in as: <strong style="color: var(--gold-light);" th:text="${username} ?: 'Administrator'">Admin</strong>
+            </div>
+        </aside>
+
+        <!-- MAIN DASHBOARD CONTENT -->
+        <main class="dashboard-main">
+            <!-- Header Title Bar -->
+            <div class="dashboard-title-bar">
+                <div>
+                    <span class="section-label">REAL-TIME TELEMETRY</span>
+                    <h2>Housekeeping Operations Command</h2>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-luxury-outline" onclick="loadDashboardStats()">⟳ Refresh Telemetry</button>
+                    <a th:href="@{/reports}" class="btn-luxury-gold">Export Analytics</a>
+                </div>
+            </div>
+
+            <!-- KPI SUMMARY CARDS (Section 16) -->
+            <div class="dashboard-kpi-grid">
+                <div class="kpi-card">
+                    <span class="kpi-label">TOTAL ROOMS</span>
+                    <span class="kpi-value" id="kpi-total-rooms">0</span>
+                </div>
+                <div class="kpi-card ready">
+                    <span class="kpi-label">READY CHAMBERS</span>
+                    <span class="kpi-value" style="color: var(--status-ready);" id="kpi-ready-rooms">0</span>
+                </div>
+                <div class="kpi-card dirty">
+                    <span class="kpi-label">DIRTY (Awaiting Clean)</span>
+                    <span class="kpi-value" style="color: var(--status-dirty);" id="kpi-dirty-rooms">0</span>
+                </div>
+                <div class="kpi-card cleaning">
+                    <span class="kpi-label">CLEANING IN PROGRESS</span>
+                    <span class="kpi-value" style="color: var(--status-cleaning);" id="kpi-cleaning-rooms">0</span>
+                </div>
+                <div class="kpi-card inspected">
+                    <span class="kpi-label">INSPECTION PENDING</span>
+                    <span class="kpi-value" style="color: var(--status-inspected);" id="kpi-inspected-rooms">0</span>
+                </div>
+                <div class="kpi-card">
+                    <span class="kpi-label">AVAILABLE STAFF</span>
+                    <span class="kpi-value" style="color: var(--status-ready);" id="kpi-avail-hk">0</span>
+                </div>
+                <div class="kpi-card">
+                    <span class="kpi-label">BUSY STAFF</span>
+                    <span class="kpi-value" style="color: var(--status-cleaning);" id="kpi-busy-hk">0</span>
+                </div>
+                <div class="kpi-card">
+                    <span class="kpi-label">ACTIVE CLEANING TASKS</span>
+                    <span class="kpi-value" id="kpi-active-tasks">0</span>
+                </div>
+                <div class="kpi-card">
+                    <span class="kpi-label">COMPLETED TASKS</span>
+                    <span class="kpi-value" style="color: var(--status-ready);" id="kpi-completed-tasks">0</span>
+                </div>
+                <div class="kpi-card">
+                    <span class="kpi-label">FAILED INSPECTIONS</span>
+                    <span class="kpi-value" style="color: var(--status-dirty);" id="kpi-failed-inspections">0</span>
+                </div>
+            </div>
+
+            <!-- INTERACTIVE CHARTS ROW (Section 16) -->
+            <div class="charts-row">
+                <!-- Doughnut Chart: Room Status Distribution -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Room Status Distribution</h3>
+                        <span class="section-label" style="margin: 0;">LIVE MYSQL</span>
+                    </div>
+                    <div style="height: 260px; position: relative;">
+                        <canvas id="roomStatusChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Bar Chart: Housekeeper Workload -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Housekeeper Active Workload</h3>
+                        <span class="section-label" style="margin: 0;">TASKS PER STAFF</span>
+                    </div>
+                    <div style="height: 260px; position: relative;">
+                        <canvas id="housekeeperWorkloadChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TWO COLUMN ACTIVITY ROW -->
+            <div class="grid-two-col">
+                <!-- Recent Cleaning Tasks -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Recent Cleaning Dispatches</h3>
+                        <a th:href="@{/cleaning-tasks}" class="btn-luxury-outline" style="padding: 4px 10px; font-size: 11px;">View All</a>
+                    </div>
+                    <div class="table-responsive" style="box-shadow: none; border: none;">
+                        <table class="luxury-table">
+                            <thead>
+                                <tr>
+                                    <th>Chamber</th>
+                                    <th>Housekeeper</th>
+                                    <th>Status</th>
+                                    <th>Assigned</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashboard-tasks-table">
+                                <tr><td colspan="5" class="text-center" style="padding: 20px; color: #888;">Loading tasks...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Recent Inspections -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Recent Quality Inspections</h3>
+                        <a th:href="@{/inspections}" class="btn-luxury-outline" style="padding: 4px 10px; font-size: 11px;">View All</a>
+                    </div>
+                    <div class="table-responsive" style="box-shadow: none; border: none;">
+                        <table class="luxury-table">
+                            <thead>
+                                <tr>
+                                    <th>Chamber</th>
+                                    <th>Supervisor</th>
+                                    <th>Verdict</th>
+                                    <th>Remarks</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashboard-inspections-table">
+                                <tr><td colspan="5" class="text-center" style="padding: 20px; color: #888;">Loading inspections...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LIVE ROOMS STATUS TABLE -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Palace Chamber Inventory Status</h3>
+                    <a th:href="@{/room-status}" class="btn-luxury-outline" style="padding: 4px 10px; font-size: 11px;">Interactive Grid</a>
+                </div>
+                <div class="table-responsive" style="box-shadow: none; border: none;">
+                    <table class="luxury-table">
+                        <thead>
+                            <tr>
+                                <th>Chamber #</th>
+                                <th>Category</th>
+                                <th>Floor</th>
+                                <th>Status</th>
+                                <th>Tariff</th>
+                                <th>Manage</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dashboard-rooms-table">
+                            <tr><td colspan="6" class="text-center" style="padding: 20px; color: #888;">Loading chambers...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- FOOTER -->
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html>

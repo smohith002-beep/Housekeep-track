@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Housekeeping Staff & Roster – HouseKeepTrack Hotel')}"></head>
+<body>
+
+    <!-- NAVIGATION -->
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <!-- HEADER TITLE BANNER -->
+    <div style="background: var(--bg-secondary); border-bottom: 1px solid var(--gold-border); padding: 40px 24px;">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+            <div>
+                <span class="section-label">HOUSEKEEPING STAFF &amp; ROSTER</span>
+                <h1 style="font-size: 2.2rem; font-weight: 700;">Housekeeper Management</h1>
+                <p style="color: var(--text-secondary); font-size: 13.5px; margin-top: 4px;">
+                    Monitor staff duty status (AVAILABLE, BUSY, OFF_DUTY), active assignments, and completion workloads.
+                </p>
+            </div>
+            <button class="btn-luxury-gold" onclick="openModal('addHousekeeperModal')">+ Add Housekeeper</button>
+        </div>
+    </div>
+
+    <!-- MAIN ROSTER SECTION -->
+    <section style="padding: 50px 24px; min-height: 75vh; background: var(--bg-primary);">
+        <div class="container">
+            <div id="housekeepers-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 26px;">
+                <!-- Loaded dynamically by housekeepers.js -->
+                <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #888;">
+                    Loading housekeeping personnel roster...
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ADD HOUSEKEEPER MODAL -->
+    <div id="addHousekeeperModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Housekeeper</h3>
+                <button class="modal-close" onclick="closeModal('addHousekeeperModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addHousekeeperForm">
+                    <div class="form-group">
+                        <label>Housekeeper Full Name</label>
+                        <input type="text" name="name" class="form-control" placeholder="e.g. Sunita Devi" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" name="phone" class="form-control" placeholder="+91 98765 02001" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" name="email" class="form-control" placeholder="sunita.hk@housekeeptrack.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Duty Status</label>
+                        <select name="status" class="form-control">
+                            <option value="AVAILABLE" selected>AVAILABLE (Ready for assignment)</option>
+                            <option value="BUSY">BUSY (Active on task)</option>
+                            <option value="OFF_DUTY">OFF_DUTY</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;">
+                        <button type="button" class="btn-luxury-outline" onclick="closeModal('addHousekeeperModal')">Cancel</button>
+                        <button type="submit" class="btn-luxury-gold">Add Staff</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+    <script th:src="@{/js/housekeepers.js}"></script>
+</body>
+</html>

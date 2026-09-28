@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Staff Portal Login – HouseKeepTrack Hotel')}"></head>
+<body style="background: var(--bg-secondary);">
+
+    <!-- NAVIGATION -->
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <!-- LOGIN CONTAINER -->
+    <div style="min-height: calc(100vh - 170px); display: flex; align-items: center; justify-content: center; padding: 40px 24px;">
+        <div class="luxury-card" style="max-width: 480px; width: 100%; padding: 40px; box-shadow: var(--shadow-luxury);">
+            <div style="text-align: center; margin-bottom: 28px;">
+                <div class="brand-monogram" style="margin: 0 auto 12px; width: 50px; height: 50px; font-size: 20px;">HK</div>
+                <span class="section-label">HOTEL OPERATIONS PORTAL</span>
+                <h2 style="font-size: 1.8rem; font-weight: 700;">Staff Authentication</h2>
+                <p style="font-size: 13px; color: var(--text-secondary); margin-top: 6px;">Sign in to access housekeeping dispatches &amp; room management.</p>
+            </div>
+
+            <!-- Error and Logout alerts -->
+            <div th:if="${param.error}" style="background: var(--status-dirty-bg); color: var(--status-dirty); padding: 10px 14px; border-radius: 4px; font-size: 12.5px; margin-bottom: 18px; border: 1px solid rgba(194,41,41,0.2);">
+                Invalid credentials. Please verify your username and password.
+            </div>
+            <div th:if="${param.logout}" style="background: var(--status-ready-bg); color: var(--status-ready); padding: 10px 14px; border-radius: 4px; font-size: 12.5px; margin-bottom: 18px; border: 1px solid rgba(16,124,65,0.2);">
+                You have been logged out securely.
+            </div>
+
+            <!-- Login Form -->
+            <form th:action="@{/login}" method="post">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="usernameInput" name="username" class="form-control" placeholder="admin, supervisor, housekeeper..." required>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="passwordInput" name="password" class="form-control" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn-luxury-gold" style="width: 100%; margin-top: 10px; height: 44px;">Sign In to Terminal</button>
+            </form>
+
+            <!-- Quick Demo Role Selectors (Academic / Testing convenience) -->
+            <div style="margin-top: 30px; padding-top: 24px; border-top: 1px solid rgba(0,0,0,0.08);">
+                <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--gold-primary); font-weight: 700; margin-bottom: 12px; text-align: center;">
+                    ⚡ 1-Click Role Logins (Academic Demo)
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <button type="button" class="btn-luxury-outline" style="padding: 6px; font-size: 11px;" onclick="fillCredentials('admin', 'admin123')">
+                        👑 Admin (Full)
+                    </button>
+                    <button type="button" class="btn-luxury-outline" style="padding: 6px; font-size: 11px;" onclick="fillCredentials('supervisor', 'supervisor123')">
+                        🔍 Supervisor
+                    </button>
+                    <button type="button" class="btn-luxury-outline" style="padding: 6px; font-size: 11px;" onclick="fillCredentials('housekeeper', 'housekeeper123')">
+                        🧹 Housekeeper
+                    </button>
+                    <button type="button" class="btn-luxury-outline" style="padding: 6px; font-size: 11px;" onclick="fillCredentials('receptionist', 'receptionist123')">
+                        🛎 Receptionist
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+    <script>
+        function fillCredentials(u, p) {
+            document.getElementById('usernameInput').value = u;
+            document.getElementById('passwordInput').value = p;
+            showToast(`Filled credentials for ${u.toUpperCase()}`, 'info');
+        }
+    </script>
+</body>
+</html>

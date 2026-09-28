@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Visual Room Status Board – HouseKeepTrack Hotel')}"></head>
+<body>
+
+    <!-- NAVIGATION -->
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <!-- HEADER TITLE BANNER -->
+    <div style="background: var(--bg-secondary); border-bottom: 1px solid var(--gold-border); padding: 40px 24px;">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+            <div>
+                <span class="section-label">ROOM OCCUPANCY &amp; QUALITY CONTROL</span>
+                <h1 style="font-size: 2.2rem; font-weight: 700;">Live Room Status Board</h1>
+                <p style="color: var(--text-secondary); font-size: 13.5px; margin-top: 4px;">
+                    Visual color-coded grid tracking real-time chamber lifecycle states.
+                </p>
+            </div>
+            <!-- Status Legend -->
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; background: #fff; padding: 12px 18px; border-radius: var(--radius-md); border: 1px solid rgba(0,0,0,0.08);">
+                <span class="status-badge ready">READY (Check-in)</span>
+                <span class="status-badge dirty">DIRTY (Needs Clean)</span>
+                <span class="status-badge cleaning">CLEANING (Active)</span>
+                <span class="status-badge inspected">INSPECTED (Audit)</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN GRID CONTAINER -->
+    <section style="padding: 45px 24px; min-height: 75vh; background: var(--bg-primary);">
+        <div class="container">
+            <!-- Filter & Search Toolbar -->
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 25px; background: #fff; padding: 16px 20px; border-radius: var(--radius-md); border: 1px solid var(--gold-border); box-shadow: var(--shadow-subtle);">
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button class="btn-luxury-outline room-filter-btn active" data-status="ALL" style="padding: 6px 14px; font-size: 11.5px;">All Rooms</button>
+                    <button class="btn-luxury-outline room-filter-btn" data-status="READY" style="padding: 6px 14px; font-size: 11.5px; color: var(--status-ready); border-color: var(--status-ready);">Ready</button>
+                    <button class="btn-luxury-outline room-filter-btn" data-status="DIRTY" style="padding: 6px 14px; font-size: 11.5px; color: var(--status-dirty); border-color: var(--status-dirty);">Dirty</button>
+                    <button class="btn-luxury-outline room-filter-btn" data-status="CLEANING" style="padding: 6px 14px; font-size: 11.5px; color: var(--status-cleaning); border-color: var(--status-cleaning);">Cleaning</button>
+                    <button class="btn-luxury-outline room-filter-btn" data-status="INSPECTED" style="padding: 6px 14px; font-size: 11.5px; color: var(--status-inspected); border-color: var(--status-inspected);">Inspected</button>
+                </div>
+
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <input type="text" id="roomSearchInput" class="form-control" placeholder="Search by room # (e.g. 101)..." style="width: 240px; padding: 8px 12px;">
+                    <button class="btn-luxury-outline" style="padding: 8px 14px; font-size: 11px;" onclick="loadRooms()">⟳ Refresh</button>
+                </div>
+            </div>
+
+            <!-- Visual Grid of Cards -->
+            <div id="room-status-grid" class="room-status-grid">
+                <!-- Dynamically injected by rooms.js -->
+                <div style="grid-column: 1/-1; text-align: center; padding: 50px; color: #888;">
+                    Loading chamber status telemetry...
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+    <script th:src="@{/js/rooms.js}"></script>
+</body>
+</html>

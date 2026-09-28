@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Housekeeping Operational Reports – HouseKeepTrack Hotel')}"></head>
+<body>
+
+    <!-- NAVIGATION -->
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <!-- HEADER TITLE BANNER -->
+    <div style="background: var(--bg-secondary); border-bottom: 1px solid var(--gold-border); padding: 40px 24px;">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+            <div>
+                <span class="section-label">EXECUTIVE ANALYTICS &amp; COMPLIANCE</span>
+                <h1 style="font-size: 2.2rem; font-weight: 700;">Operational &amp; Turnaround Reports</h1>
+                <p style="color: var(--text-secondary); font-size: 13.5px; margin-top: 4px;">
+                    Average room turnaround times (completedAt – assignedAt), housekeeper workload balance, and inspection quality rates.
+                </p>
+            </div>
+            <button class="btn-luxury-outline" onclick="loadReportsData()">⟳ Refresh Analytics</button>
+        </div>
+    </div>
+
+    <!-- MAIN REPORTS SECTION -->
+    <section style="padding: 45px 24px; min-height: 75vh; background: var(--bg-primary);">
+        <div class="container">
+            <!-- SUMMARY KPI HIGHLIGHTS -->
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 35px;">
+                <div class="stat-card">
+                    <div class="stat-num" id="rep-avg-turnaround">-</div>
+                    <div class="stat-label">AVG ROOM TURNAROUND (MINUTES)</div>
+                </div>
+                <div class="stat-card ready">
+                    <div class="stat-num" style="color: var(--status-ready);" id="rep-pass-rate">-</div>
+                    <div class="stat-label">INSPECTION PASS RATE</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num" style="color: var(--gold-primary);" id="rep-total-tasks">-</div>
+                    <div class="stat-label">HISTORICAL CLEANING RECORDS</div>
+                </div>
+            </div>
+
+            <!-- SECTION 1: TURNAROUND TIME ANALYSIS TABLE -->
+            <div style="margin-bottom: 45px;">
+                <div style="margin-bottom: 14px;">
+                    <span class="section-label">TURNAROUND EFFICIENCY</span>
+                    <h2 style="font-size: 1.45rem;">Chamber Turnaround Log (completedAt &minus; assignedAt)</h2>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="luxury-table">
+                        <thead>
+                            <tr>
+                                <th>Task ID</th>
+                                <th>Chamber #</th>
+                                <th>Housekeeper</th>
+                                <th>Assigned At</th>
+                                <th>Completed At</th>
+                                <th>Turnaround (Minutes)</th>
+                                <th>Turnaround (Hours)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="turnaround-table-body">
+                            <tr><td colspan="7" class="text-center" style="padding: 24px; color: #888;">Calculating turnaround telemetry...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SECTION 2: HOUSEKEEPER WORKLOAD REPORT -->
+            <div style="margin-bottom: 45px;">
+                <div style="margin-bottom: 14px;">
+                    <span class="section-label">HUMAN CAPITAL UTILIZATION</span>
+                    <h2 style="font-size: 1.45rem;">Housekeeper Workload &amp; Task Completion</h2>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="luxury-table">
+                        <thead>
+                            <tr>
+                                <th>Staff Name</th>
+                                <th>Current Duty Status</th>
+                                <th>Active In-Progress Tasks</th>
+                                <th>Completed Tasks</th>
+                                <th>Total Assigned</th>
+                            </tr>
+                        </thead>
+                        <tbody id="workload-table-body">
+                            <tr><td colspan="5" class="text-center" style="padding: 24px; color: #888;">Loading staff workload data...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', loadReportsData);
+
+        async function loadReportsData() {
+            try {
+                const res = await fetch('/api/reports/comprehensive');
+                if (!res.ok) throw new Error('Failed to load report data');
+                const data = await res.json();
+
+                // KPI counters
+                document.getElementById('rep-avg-turnaround').textContent = (data.averageTurnaroundMinutes || 0) + ' min';
+                const insp = data.inspectionSummary || {};
+                document.getElementById('rep-pass-rate').textContent = (insp.passRatePercentage || 100) + '%';
+                const recs = data.turnaroundRecords || [];
+                document.getElementById('rep-total-tasks').textContent = recs.length;
+
+                // Turnaround table
+                const tBody = document.getElementById('turnaround-table-body');
+                tBody.innerHTML = '';
+                if (recs.length === 0) {
+                    tBody.innerHTML = '<tr><td colspan="7" class="text-center" style="padding: 20px; color: #888;">No completed turnarounds recorded yet.</td></tr>';
+                } else {
+                    recs.forEach(r => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>#${r.taskId}</td>
+                            <td><strong>Room ${r.roomNumber}</strong></td>
+                            <td>${r.housekeeper}</td>
+                            <td>${r.assignedAt.replace('T', ' ').substring(0, 16)}</td>
+                            <td>${r.completedAt.replace('T', ' ').substring(0, 16)}</td>
+                            <td><strong style="color:var(--gold-dark);">${r.turnaroundMinutes} min</strong></td>
+                            <td>${r.turnaroundHours} hrs</td>
+                        `;
+                        tBody.appendChild(tr);
+                    });
+                }
+
+                // Workload table
+                const wBody = document.getElementById('workload-table-body');
+                wBody.innerHTML = '';
+                const workloads = data.housekeeperWorkload || [];
+                workloads.forEach(w => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>${w.name}</strong></td>
+                        <td><span class="status-badge ${w.status === 'AVAILABLE' ? 'ready' : (w.status === 'BUSY' ? 'cleaning' : 'dirty')}">${w.status}</span></td>
+                        <td>${w.activeTasks}</td>
+                        <td><strong style="color:var(--status-ready);">${w.completedTasks}</strong></td>
+                        <td>${w.totalAssigned}</td>
+                    `;
+                    wBody.appendChild(tr);
+                });
+            } catch (e) {
+                console.error('Error fetching reports:', e);
+            }
+        }
+    </script>
+</body>
+</html>

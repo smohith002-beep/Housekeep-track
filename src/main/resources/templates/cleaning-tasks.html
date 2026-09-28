@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Cleaning Tasks & Dispatch – HouseKeepTrack Hotel')}"></head>
+<body>
+
+    <!-- NAVIGATION -->
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <!-- HEADER TITLE BANNER -->
+    <div style="background: var(--bg-secondary); border-bottom: 1px solid var(--gold-border); padding: 40px 24px;">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+            <div>
+                <span class="section-label">ROOM SANITATION &amp; TURNOVER</span>
+                <h1 style="font-size: 2.2rem; font-weight: 700;">Cleaning Tasks &amp; Dispatch</h1>
+                <p style="color: var(--text-secondary); font-size: 13.5px; margin-top: 4px;">
+                    Track housekeeping task progress from assignment through progress to completion.
+                </p>
+            </div>
+            <button class="btn-luxury-gold" onclick="openModal('createTaskModal')">+ Dispatch Cleaning Task</button>
+        </div>
+    </div>
+
+    <!-- MAIN TASKS SECTION -->
+    <section style="padding: 45px 24px; min-height: 75vh; background: var(--bg-primary);">
+        <div class="container">
+            <!-- Filter Toolbar -->
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 25px; background: #fff; padding: 14px 20px; border-radius: var(--radius-md); border: 1px solid var(--gold-border); box-shadow: var(--shadow-subtle);">
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button class="btn-luxury-outline task-filter-btn active" data-status="ALL" style="padding: 6px 14px; font-size: 11.5px;">All Tasks</button>
+                    <button class="btn-luxury-outline task-filter-btn" data-status="ASSIGNED" style="padding: 6px 14px; font-size: 11.5px;">Assigned</button>
+                    <button class="btn-luxury-outline task-filter-btn" data-status="IN_PROGRESS" style="padding: 6px 14px; font-size: 11.5px; color: var(--status-cleaning); border-color: var(--status-cleaning);">In Progress</button>
+                    <button class="btn-luxury-outline task-filter-btn" data-status="COMPLETED" style="padding: 6px 14px; font-size: 11.5px; color: var(--status-ready); border-color: var(--status-ready);">Completed</button>
+                    <button class="btn-luxury-outline task-filter-btn" data-status="REOPENED" style="padding: 6px 14px; font-size: 11.5px; color: var(--status-dirty); border-color: var(--status-dirty);">Reopened</button>
+                </div>
+                <button class="btn-luxury-outline" style="padding: 6px 14px; font-size: 11px;" onclick="loadTasks()">⟳ Refresh Tasks</button>
+            </div>
+
+            <!-- Table of Tasks -->
+            <div class="table-responsive">
+                <table class="luxury-table">
+                    <thead>
+                        <tr>
+                            <th>Task #</th>
+                            <th>Chamber</th>
+                            <th>Assigned Housekeeper</th>
+                            <th>Task Status</th>
+                            <th>Assigned Time</th>
+                            <th>Notes</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tasks-table-body">
+                        <!-- Loaded by tasks.js -->
+                        <tr><td colspan="7" class="text-center" style="padding: 30px; color: #888;">Loading cleaning tasks...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- CREATE TASK MODAL -->
+    <div id="createTaskModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Dispatch Cleaning Task</h3>
+                <button class="modal-close" onclick="closeModal('createTaskModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="createTaskForm">
+                    <div class="form-group">
+                        <label>Select Room</label>
+                        <select name="roomId" id="taskRoomSelect" class="form-control" required>
+                            <!-- Populated on open -->
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Assign Specific Housekeeper (Optional - Leave blank for Auto-Assignment)</label>
+                        <select name="housekeeperId" id="taskHkSelect" class="form-control">
+                            <option value="">⚡ Automatic Dispatch to Next Available Staff</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Cleaning Notes / Specific Instructions</label>
+                        <textarea name="notes" class="form-control" rows="3" placeholder="e.g. VIP guest arrival at 3 PM. Change all silks and restock mini bar."></textarea>
+                    </div>
+
+                    <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;">
+                        <button type="button" class="btn-luxury-outline" onclick="closeModal('createTaskModal')">Cancel</button>
+                        <button type="submit" class="btn-luxury-gold">Dispatch Task</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+    <script th:src="@{/js/tasks.js}"></script>
+    <script>
+        // Populate room and housekeeper dropdowns for manual dispatch modal
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const roomRes = await fetch('/api/rooms');
+                if (roomRes.ok) {
+                    const rooms = await roomRes.json();
+                    const rSel = document.getElementById('taskRoomSelect');
+                    if (rSel) {
+                        rSel.innerHTML = '<option value="">-- Choose Chamber --</option>';
+                        rooms.forEach(r => {
+                            const opt = document.createElement('option');
+                            opt.value = r.id;
+                            opt.textContent = `Room ${r.roomNumber} - ${r.roomType} (${r.status})`;
+                            rSel.appendChild(opt);
+                        });
+                    }
+                }
+
+                const hkRes = await fetch('/api/housekeepers');
+                if (hkRes.ok) {
+                    const hks = await hkRes.json();
+                    const hkSel = document.getElementById('taskHkSelect');
+                    if (hkSel) {
+                        hks.forEach(h => {
+                            const opt = document.createElement('option');
+                            opt.value = h.id;
+                            opt.textContent = `${h.name} (${h.status})`;
+                            if (h.status === 'BUSY') opt.disabled = true;
+                            hkSel.appendChild(opt);
+                        });
+                    }
+                }
+            } catch (e) {
+                console.error('Error loading task modal selects', e);
+            }
+        });
+    </script>
+</body>
+</html>

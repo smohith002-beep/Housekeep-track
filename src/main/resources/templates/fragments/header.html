@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} ?: 'HouseKeepTrack Hotel – Luxury Housekeeping & Room Management'">HouseKeepTrack Hotel</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    
+    <!-- CSS Stylesheets -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/responsive.css}">
+</head>
+<body>
+<nav th:fragment="navbar" class="luxury-navbar">
+    <div class="nav-container">
+        <!-- Brand Logo -->
+        <a th:href="@{/}" class="nav-brand">
+            <div class="brand-monogram">HK</div>
+            <div class="brand-text">
+                <h1>HOUSEKEEPTRACK</h1>
+                <span>HOTEL &amp; PALACE</span>
+            </div>
+        </a>
+
+        <!-- Mobile Menu Hamburger Button -->
+        <button class="mobile-menu-btn" aria-label="Toggle navigation">☰</button>
+
+        <!-- Main Navigation Links -->
+        <ul class="nav-links">
+            <li><a th:href="@{/}" th:classappend="${activeNav == 'home'} ? 'active' : ''">HOME</a></li>
+            <li><a th:href="@{/rooms}" th:classappend="${activeNav == 'rooms'} ? 'active' : ''">ROOMS</a></li>
+            <li><a th:href="@{/housekeeping}" th:classappend="${activeNav == 'housekeeping'} ? 'active' : ''">HOUSEKEEPING</a></li>
+            <li><a th:href="@{/housekeepers}" th:classappend="${activeNav == 'housekeepers'} ? 'active' : ''">HOUSEKEEPERS</a></li>
+            <li><a th:href="@{/room-status}" th:classappend="${activeNav == 'room-status'} ? 'active' : ''">ROOM STATUS</a></li>
+            <li><a th:href="@{/cleaning-tasks}" th:classappend="${activeNav == 'cleaning-tasks'} ? 'active' : ''">CLEANING TASKS</a></li>
+            <li><a th:href="@{/inspections}" th:classappend="${activeNav == 'inspections'} ? 'active' : ''">INSPECTIONS</a></li>
+            <li><a th:href="@{/admin/dashboard}" th:classappend="${activeNav == 'dashboard'} ? 'active' : ''">DASHBOARD</a></li>
+            <li><a th:href="@{/gallery}" th:classappend="${activeNav == 'gallery'} ? 'active' : ''">GALLERY</a></li>
+            <li><a th:href="@{/contact}" th:classappend="${activeNav == 'contact'} ? 'active' : ''">CONTACT</a></li>
+        </ul>
+
+        <!-- Right Side Action Buttons -->
+        <div class="nav-actions">
+            <a th:href="@{/login}" class="btn-nav-login">LOGIN</a>
+            <a th:href="@{/admin/dashboard}" class="btn-luxury-outline" style="padding: 9px 16px;">ADMIN PANEL</a>
+            <button class="btn-luxury-gold" onclick="openModal('bookRoomModal')">BOOK A ROOM</button>
+        </div>
+    </div>
+</nav>
+</body>
+</html>

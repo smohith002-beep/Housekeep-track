@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Luxury Rooms & Suites – HouseKeepTrack Hotel')}"></head>
+<body>
+
+    <!-- NAVIGATION -->
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <!-- PAGE HERO -->
+    <div style="background: linear-gradient(180deg, rgba(18, 19, 22, 0.7) 0%, rgba(18, 19, 22, 0.85) 100%), url('https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1800&q=80'); background-size: cover; background-position: center; padding: 70px 24px; text-align: center; color: #fff;">
+        <span class="section-label" style="color: var(--gold-light);">SANCTUARIES OF SPLENDOUR</span>
+        <h1 style="font-size: 2.8rem; color: #fff; margin-bottom: 12px;">Chambers &amp; Suites Catalog</h1>
+        <p style="font-size: 1.1rem; color: #ddd; max-width: 650px; margin: 0 auto;">Experience palatial tranquility and verified 5-star cleanliness standards.</p>
+    </div>
+
+    <!-- MAIN ROOMS CATALOG -->
+    <section style="padding: 60px 24px; background: var(--bg-primary); min-height: 70vh;">
+        <div class="container">
+            <!-- Filter & Action Controls -->
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px; margin-bottom: 35px; background: #fff; padding: 18px 24px; border-radius: var(--radius-md); border: 1px solid var(--gold-border); box-shadow: var(--shadow-subtle);">
+                <!-- Status Filter Buttons -->
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <button class="btn-luxury-outline room-filter-btn active" data-status="ALL" style="padding: 7px 16px; font-size: 11.5px;">All Chambers</button>
+                    <button class="btn-luxury-outline room-filter-btn" data-status="READY" style="padding: 7px 16px; font-size: 11.5px; border-color: var(--status-ready); color: var(--status-ready);">Ready for Check-in</button>
+                    <button class="btn-luxury-outline room-filter-btn" data-status="DIRTY" style="padding: 7px 16px; font-size: 11.5px; border-color: var(--status-dirty); color: var(--status-dirty);">Dirty</button>
+                    <button class="btn-luxury-outline room-filter-btn" data-status="CLEANING" style="padding: 7px 16px; font-size: 11.5px; border-color: var(--status-cleaning); color: var(--status-cleaning);">Cleaning</button>
+                    <button class="btn-luxury-outline room-filter-btn" data-status="INSPECTED" style="padding: 7px 16px; font-size: 11.5px; border-color: var(--status-inspected); color: var(--status-inspected);">Inspected</button>
+                </div>
+
+                <!-- Search & Add Room -->
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <input type="text" id="roomSearchInput" class="form-control" placeholder="Search room # or type..." style="width: 220px; padding: 8px 14px;">
+                    <button class="btn-luxury-gold" style="padding: 9px 18px; font-size: 11.5px;" onclick="openModal('addRoomModal')">+ Add Chamber</button>
+                </div>
+            </div>
+
+            <!-- Rooms Grid -->
+            <div id="rooms-grid-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 30px;">
+                <!-- Dynamically loaded by rooms.js -->
+                <div style="text-align: center; grid-column: 1/-1; padding: 40px; color: #888;">
+                    Loading royal chambers from database...
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ADD ROOM MODAL -->
+    <div id="addRoomModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Chamber</h3>
+                <button class="modal-close" onclick="closeModal('addRoomModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addRoomForm">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                            <label>Room Number</label>
+                            <input type="text" name="roomNumber" class="form-control" placeholder="e.g. 401" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Floor</label>
+                            <input type="number" name="floor" class="form-control" placeholder="e.g. 4" min="1" required>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                            <label>Room Type</label>
+                            <select name="roomType" class="form-control" required>
+                                <option value="DELUXE">DELUXE</option>
+                                <option value="PREMIUM">PREMIUM</option>
+                                <option value="SUITE">SUITE</option>
+                                <option value="PRESIDENTIAL">PRESIDENTIAL</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Initial Status</label>
+                            <select name="status" class="form-control">
+                                <option value="READY" selected>READY</option>
+                                <option value="DIRTY">DIRTY</option>
+                                <option value="CLEANING">CLEANING</option>
+                                <option value="INSPECTED">INSPECTED</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                            <label>Capacity (Guests)</label>
+                            <input type="number" name="capacity" class="form-control" value="2" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Price Per Night (₹)</label>
+                            <input type="number" name="pricePerNight" class="form-control" value="18000" min="1000" step="500" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Image URL</label>
+                        <input type="url" name="imageUrl" class="form-control" placeholder="https://images.unsplash.com/photo-..." value="https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea name="description" class="form-control" rows="3" placeholder="Chamber amenities, decor highlights and view..."></textarea>
+                    </div>
+
+                    <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;">
+                        <button type="button" class="btn-luxury-outline" onclick="closeModal('addRoomModal')">Cancel</button>
+                        <button type="submit" class="btn-luxury-gold">Save Chamber</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT ROOM MODAL -->
+    <div id="editRoomModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Chamber Information</h3>
+                <button class="modal-close" onclick="closeModal('editRoomModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editRoomForm">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                            <label>Room Number</label>
+                            <input type="text" name="roomNumber" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Floor</label>
+                            <input type="number" name="floor" class="form-control" min="1" required>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                            <label>Room Type</label>
+                            <select name="roomType" class="form-control" required>
+                                <option value="DELUXE">DELUXE</option>
+                                <option value="PREMIUM">PREMIUM</option>
+                                <option value="SUITE">SUITE</option>
+                                <option value="PRESIDENTIAL">PRESIDENTIAL</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select name="status" class="form-control">
+                                <option value="READY">READY</option>
+                                <option value="DIRTY">DIRTY</option>
+                                <option value="CLEANING">CLEANING</option>
+                                <option value="INSPECTED">INSPECTED</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                            <label>Capacity (Guests)</label>
+                            <input type="number" name="capacity" class="form-control" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Price Per Night (₹)</label>
+                            <input type="number" name="pricePerNight" class="form-control" min="1000" step="500" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Image URL</label>
+                        <input type="url" name="imageUrl" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea name="description" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;">
+                        <button type="button" class="btn-luxury-outline" onclick="closeModal('editRoomModal')">Cancel</button>
+                        <button type="submit" class="btn-luxury-gold">Update Chamber</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+    <script th:src="@{/js/rooms.js}"></script>
+</body>
+</html>
