@@ -63,6 +63,9 @@ public class CleaningTaskService {
 
     @Transactional
     public CleaningTaskDTO createTask(CleaningTaskDTO dto) {
+        if (dto == null || dto.getRoomId() == null) {
+            throw new IllegalArgumentException("Room ID is required");
+        }
         Room room = roomRepository.findById(dto.getRoomId())
                 .orElseThrow(() -> new ResourceNotFoundException("Room with id " + dto.getRoomId() + " not found"));
 

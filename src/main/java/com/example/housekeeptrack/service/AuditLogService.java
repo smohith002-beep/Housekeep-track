@@ -44,6 +44,15 @@ public class AuditLogService {
 
     @Transactional
     public AuditLog createLog(AuditLog auditLog) {
+        if (auditLog == null) {
+            throw new IllegalArgumentException("Audit log body is required");
+        }
+        if (auditLog.getEntityType() == null || auditLog.getEntityType().isBlank()) {
+            throw new IllegalArgumentException("Entity type is required");
+        }
+        if (auditLog.getAction() == null || auditLog.getAction().isBlank()) {
+            throw new IllegalArgumentException("Action is required");
+        }
         if (auditLog.getChangedAt() == null) {
             auditLog.setChangedAt(LocalDateTime.now());
         }

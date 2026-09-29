@@ -38,13 +38,37 @@ public class GuestController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<GuestDTO>> updateGuest(@PathVariable Long id, @Valid @RequestBody GuestDTO dto) {
+    public ResponseEntity<ApiResponse<GuestDTO>> updateGuest(@PathVariable Long id, @RequestBody GuestDTO dto) {
         GuestDTO updated = guestService.updateGuest(id, dto);
+        return ResponseEntity.ok(ApiResponse.success("Guest updated successfully", updated));
+    }
+
+    @PutMapping
+    public ResponseEntity<ApiResponse<GuestDTO>> updateGuestWithoutPathId(
+            @RequestParam(required = false) Long id,
+            @RequestBody(required = false) GuestDTO dto) {
+        Long targetId = id;
+        if (targetId == null && dto != null && dto.getId() != null) {
+            targetId = dto.getId();
+        }
+        if (targetId == null) {
+            throw new IllegalArgumentException("Guest ID is required for update. Please include the ID in the URL (e.g., PUT /api/guests/1 or ?id=1, or include 'id' in JSON body).");
+        }
+        GuestDTO updated = guestService.updateGuest(targetId, dto != null ? dto : new GuestDTO());
         return ResponseEntity.ok(ApiResponse.success("Guest updated successfully", updated));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteGuest(@PathVariable Long id) {
+        guestService.deleteGuest(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteGuestWithoutPathId(@RequestParam(required = false) Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Guest ID is required for deletion. Please include the ID in the URL (e.g., DELETE /api/guests/1 or DELETE /api/guests?id=1).");
+        }
         guestService.deleteGuest(id);
         return ResponseEntity.noContent().build();
     }

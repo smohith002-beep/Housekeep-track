@@ -61,6 +61,19 @@ public class BookingService {
 
     @Transactional
     public BookingResponseDTO createBooking(BookingRequestDTO request) {
+        if (request == null) {
+            throw new IllegalArgumentException("Booking request body is required");
+        }
+        if (request.getRoomId() == null) {
+            throw new IllegalArgumentException("Room ID is required");
+        }
+        if (request.getCheckInDate() == null) {
+            throw new IllegalArgumentException("Check-in date is required");
+        }
+        if (request.getCheckOutDate() == null) {
+            throw new IllegalArgumentException("Check-out date is required");
+        }
+
         Room room = roomRepository.findById(request.getRoomId())
                 .orElseThrow(() -> new ResourceNotFoundException("Room with id " + request.getRoomId() + " not found"));
 

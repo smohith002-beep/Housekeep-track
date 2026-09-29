@@ -40,13 +40,33 @@ public class BookingController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<BookingResponseDTO>> updateBooking(@PathVariable Long id, @Valid @RequestBody BookingRequestDTO request) {
+    public ResponseEntity<ApiResponse<BookingResponseDTO>> updateBooking(@PathVariable Long id, @RequestBody BookingRequestDTO request) {
         BookingResponseDTO updated = bookingService.updateBooking(id, request);
+        return ResponseEntity.ok(ApiResponse.success("Booking updated successfully", updated));
+    }
+
+    @PutMapping
+    public ResponseEntity<ApiResponse<BookingResponseDTO>> updateBookingWithoutPathId(
+            @RequestParam(required = false) Long id,
+            @RequestBody(required = false) BookingRequestDTO request) {
+        if (id == null) {
+            throw new IllegalArgumentException("Booking ID is required for update. Please include the ID in the URL (e.g., PUT /api/bookings/1 or ?id=1).");
+        }
+        BookingResponseDTO updated = bookingService.updateBooking(id, request != null ? request : new BookingRequestDTO());
         return ResponseEntity.ok(ApiResponse.success("Booking updated successfully", updated));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBooking(@PathVariable Long id) {
+        bookingService.deleteBooking(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteBookingWithoutPathId(@RequestParam(required = false) Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Booking ID is required for deletion. Please include the ID in the URL (e.g., DELETE /api/bookings/1 or DELETE /api/bookings?id=1).");
+        }
         bookingService.deleteBooking(id);
         return ResponseEntity.noContent().build();
     }

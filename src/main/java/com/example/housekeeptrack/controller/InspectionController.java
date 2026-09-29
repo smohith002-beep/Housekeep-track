@@ -43,8 +43,32 @@ public class InspectionController {
         return ResponseEntity.ok(ApiResponse.success("Inspection updated successfully", updated));
     }
 
+    @PutMapping
+    public ResponseEntity<ApiResponse<InspectionDTO>> updateInspectionWithoutPathId(
+            @RequestParam(required = false) Long id,
+            @RequestBody(required = false) InspectionDTO dto) {
+        Long targetId = id;
+        if (targetId == null && dto != null && dto.getId() != null) {
+            targetId = dto.getId();
+        }
+        if (targetId == null) {
+            throw new IllegalArgumentException("Inspection ID is required for update. Please include the ID in the URL (e.g., PUT /api/inspections/1 or ?id=1, or include 'id' in JSON body).");
+        }
+        InspectionDTO updated = inspectionService.updateInspection(targetId, dto != null ? dto : new InspectionDTO());
+        return ResponseEntity.ok(ApiResponse.success("Inspection updated successfully", updated));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteInspection(@PathVariable Long id) {
+        inspectionService.deleteInspection(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteInspectionWithoutPathId(@RequestParam(required = false) Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Inspection ID is required for deletion. Please include the ID in the URL (e.g., DELETE /api/inspections/1 or DELETE /api/inspections?id=1).");
+        }
         inspectionService.deleteInspection(id);
         return ResponseEntity.noContent().build();
     }

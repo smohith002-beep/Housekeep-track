@@ -46,13 +46,37 @@ public class RoomController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<RoomDTO>> updateRoom(@PathVariable Long id, @Valid @RequestBody RoomDTO dto) {
+    public ResponseEntity<ApiResponse<RoomDTO>> updateRoom(@PathVariable Long id, @RequestBody RoomDTO dto) {
         RoomDTO updated = roomService.updateRoom(id, dto);
+        return ResponseEntity.ok(ApiResponse.success("Room updated successfully", updated));
+    }
+
+    @PutMapping
+    public ResponseEntity<ApiResponse<RoomDTO>> updateRoomWithoutPathId(
+            @RequestParam(required = false) Long id,
+            @RequestBody(required = false) RoomDTO dto) {
+        Long targetId = id;
+        if (targetId == null && dto != null && dto.getId() != null) {
+            targetId = dto.getId();
+        }
+        if (targetId == null) {
+            throw new IllegalArgumentException("Room ID is required for update. Please include the ID in the URL (e.g., PUT /api/rooms/1 or ?id=1, or include 'id' in JSON body).");
+        }
+        RoomDTO updated = roomService.updateRoom(targetId, dto != null ? dto : new RoomDTO());
         return ResponseEntity.ok(ApiResponse.success("Room updated successfully", updated));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRoom(@PathVariable Long id) {
+        roomService.deleteRoom(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteRoomWithoutPathId(@RequestParam(required = false) Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Room ID is required for deletion. Please include the ID in the URL (e.g., DELETE /api/rooms/1 or DELETE /api/rooms?id=1).");
+        }
         roomService.deleteRoom(id);
         return ResponseEntity.noContent().build();
     }

@@ -48,8 +48,32 @@ public class CleaningTaskController {
         return ResponseEntity.ok(ApiResponse.success("Cleaning task updated successfully", updated));
     }
 
+    @PutMapping
+    public ResponseEntity<ApiResponse<CleaningTaskDTO>> updateTaskWithoutPathId(
+            @RequestParam(required = false) Long id,
+            @RequestBody(required = false) CleaningTaskDTO dto) {
+        Long targetId = id;
+        if (targetId == null && dto != null && dto.getId() != null) {
+            targetId = dto.getId();
+        }
+        if (targetId == null) {
+            throw new IllegalArgumentException("Task ID is required for update. Please include the ID in the URL (e.g., PUT /api/cleaning-tasks/1 or ?id=1, or include 'id' in JSON body).");
+        }
+        CleaningTaskDTO updated = cleaningTaskService.updateTask(targetId, dto != null ? dto : new CleaningTaskDTO());
+        return ResponseEntity.ok(ApiResponse.success("Cleaning task updated successfully", updated));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+        cleaningTaskService.deleteTask(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteTaskWithoutPathId(@RequestParam(required = false) Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Task ID is required for deletion. Please include the ID in the URL (e.g., DELETE /api/cleaning-tasks/1 or DELETE /api/cleaning-tasks?id=1).");
+        }
         cleaningTaskService.deleteTask(id);
         return ResponseEntity.noContent().build();
     }

@@ -42,8 +42,32 @@ public class AuditLogController {
         return ResponseEntity.ok(ApiResponse.success("Audit log updated successfully", updated));
     }
 
+    @PutMapping
+    public ResponseEntity<ApiResponse<AuditLog>> updateAuditLogWithoutPathId(
+            @RequestParam(required = false) Long id,
+            @RequestBody(required = false) AuditLog auditLog) {
+        Long targetId = id;
+        if (targetId == null && auditLog != null && auditLog.getId() != null) {
+            targetId = auditLog.getId();
+        }
+        if (targetId == null) {
+            throw new IllegalArgumentException("Audit log ID is required for update. Please include the ID in the URL (e.g., PUT /api/audit-logs/1 or ?id=1, or include 'id' in JSON body).");
+        }
+        AuditLog updated = auditLogService.updateLog(targetId, auditLog != null ? auditLog : new AuditLog());
+        return ResponseEntity.ok(ApiResponse.success("Audit log updated successfully", updated));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAuditLog(@PathVariable Long id) {
+        auditLogService.deleteLog(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteAuditLogWithoutPathId(@RequestParam(required = false) Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Audit log ID is required for deletion. Please include the ID in the URL (e.g., DELETE /api/audit-logs/1 or DELETE /api/audit-logs?id=1).");
+        }
         auditLogService.deleteLog(id);
         return ResponseEntity.noContent().build();
     }

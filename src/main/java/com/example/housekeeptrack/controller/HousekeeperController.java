@@ -49,13 +49,37 @@ public class HousekeeperController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<HousekeeperDTO>> updateHousekeeper(@PathVariable Long id, @Valid @RequestBody HousekeeperDTO dto) {
+    public ResponseEntity<ApiResponse<HousekeeperDTO>> updateHousekeeper(@PathVariable Long id, @RequestBody HousekeeperDTO dto) {
         HousekeeperDTO updated = housekeeperService.updateHousekeeper(id, dto);
+        return ResponseEntity.ok(ApiResponse.success("Housekeeper updated successfully", updated));
+    }
+
+    @PutMapping
+    public ResponseEntity<ApiResponse<HousekeeperDTO>> updateHousekeeperWithoutPathId(
+            @RequestParam(required = false) Long id,
+            @RequestBody(required = false) HousekeeperDTO dto) {
+        Long targetId = id;
+        if (targetId == null && dto != null && dto.getId() != null) {
+            targetId = dto.getId();
+        }
+        if (targetId == null) {
+            throw new IllegalArgumentException("Housekeeper ID is required for update. Please include the ID in the URL (e.g., PUT /api/housekeepers/1 or ?id=1, or include 'id' in JSON body).");
+        }
+        HousekeeperDTO updated = housekeeperService.updateHousekeeper(targetId, dto != null ? dto : new HousekeeperDTO());
         return ResponseEntity.ok(ApiResponse.success("Housekeeper updated successfully", updated));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteHousekeeper(@PathVariable Long id) {
+        housekeeperService.deleteHousekeeper(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteHousekeeperWithoutPathId(@RequestParam(required = false) Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Housekeeper ID is required for deletion. Please include the ID in the URL (e.g., DELETE /api/housekeepers/1 or DELETE /api/housekeepers?id=1).");
+        }
         housekeeperService.deleteHousekeeper(id);
         return ResponseEntity.noContent().build();
     }
